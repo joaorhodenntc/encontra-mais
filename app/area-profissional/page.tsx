@@ -31,7 +31,6 @@ type Professional = {
   full_name: string;
   email: string;
   phone: string;
-  whatsapp: string;
   address: string;
   description: string;
   category_id: string;
@@ -163,6 +162,17 @@ export default function ProfessionalAreaPage() {
       .substring(0, 2);
   };
 
+  // Função para formatar telefone
+  const formatPhone = (phone: string) => {
+    if (!phone) return "";
+    const cleanPhone = phone.replace(/\D/g, "");
+    if (cleanPhone.length !== 11) return phone;
+    return `(${cleanPhone.slice(0, 2)}) ${cleanPhone.slice(
+      2,
+      7
+    )}-${cleanPhone.slice(7)}`;
+  };
+
   if (loading) {
     return (
       <div className="container flex items-center justify-center px-4 py-16">
@@ -248,7 +258,9 @@ export default function ProfessionalAreaPage() {
                 </div>
                 <div className="flex items-center justify-center sm:justify-start text-muted-foreground">
                   <Phone className="mr-1 h-4 w-4" />
-                  {professional.whatsapp || "WhatsApp não informado"}
+                  {professional.phone
+                    ? formatPhone(professional.phone)
+                    : "Telefone não informado"}
                 </div>
                 <div className="mt-2">
                   <span
