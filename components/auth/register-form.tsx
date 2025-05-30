@@ -38,7 +38,11 @@ const registerSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
   phone: z.string().min(10, "Número de telefone inválido"),
-  location: z.string().min(3, "Localização é obrigatória"),
+  cep: z.string().min(8, "CEP inválido").max(9, "CEP inválido"),
+  state: z.string().min(2, "Estado é obrigatório"),
+  city: z.string().min(2, "Cidade é obrigatória"),
+  location: z.string().min(3, "Endereço é obrigatório"),
+  number: z.string().min(0, "Número não é obrigatório"),
   description: z
     .string()
     .min(10, "Descrição deve ter pelo menos 10 caracteres"),
@@ -48,16 +52,7 @@ const registerSchema = z.object({
   }),
 });
 
-type RegisterFormValues = {
-  fullName: string;
-  email: string;
-  password: string;
-  phone: string;
-  location: string;
-  description: string;
-  category: string;
-  terms: boolean;
-};
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
 // Tipo para categorias
 type Category = {
@@ -76,13 +71,13 @@ export function RegisterForm() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [loadingCep, setLoadingCep] = useState(false);
 
   // Buscar categorias do Supabase ao carregar o componente
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         setLoadingCategories(true);
-        console.log("Iniciando busca de categorias...");
 
         const { data, error } = await supabase
           .from("categories")
@@ -98,13 +93,9 @@ export function RegisterForm() {
           return;
         }
 
-        console.log("Dados recebidos:", data);
-
         if (data && data.length > 0) {
-          console.log("Categorias carregadas com sucesso:", data.length);
           setCategories(data);
         } else {
-          console.log("Nenhuma categoria encontrada");
           setFormError(
             "Não foram encontradas categorias ativas. Entre em contato com o suporte."
           );
@@ -122,6 +113,60 @@ export function RegisterForm() {
     fetchCategories();
   }, []);
 
+  // Função para buscar endereço pelo CEP
+  const fetchAddressByCep = async (cep: string) => {
+    try {
+      setLoadingCep(true);
+      const cleanCep = cep.replace(/\D/g, "");
+
+      if (cleanCep.length !== 8) {
+        return;
+      }
+
+      const response = await fetch(
+        `https://viacep.com.br/ws/${cleanCep}/json/`
+      );
+      const data = await response.json();
+
+      if (data.erro) {
+        toast({
+          title: "CEP não encontrado",
+          description: "Por favor, verifique o CEP informado.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      form.setValue("state", data.uf);
+      form.setValue("city", data.localidade);
+      form.setValue("location", data.logradouro);
+    } catch (error) {
+      console.error("Erro ao buscar CEP:", error);
+      toast({
+        title: "Erro ao buscar CEP",
+        description: "Não foi possível buscar o endereço. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingCep(false);
+    }
+  };
+
+  // Função para formatar telefone
+  const formatPhone = (value: string) => {
+    const cleanValue = value.replace(/\D/g, "");
+    if (cleanValue.length <= 2) {
+      return cleanValue;
+    }
+    if (cleanValue.length <= 7) {
+      return `(${cleanValue.slice(0, 2)}) ${cleanValue.slice(2)}`;
+    }
+    return `(${cleanValue.slice(0, 2)}) ${cleanValue.slice(
+      2,
+      7
+    )}-${cleanValue.slice(7, 11)}`;
+  };
+
   // Configurar o formulário com React Hook Form e Zod
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -130,12 +175,25 @@ export function RegisterForm() {
       email: "",
       password: "",
       phone: "",
+      cep: "",
+      state: "",
+      city: "",
       location: "",
+      number: "",
       description: "",
       category: "",
       terms: false,
     },
   });
+
+  // Função para formatar CEP
+  const formatCep = (value: string) => {
+    const cleanValue = value.replace(/\D/g, "");
+    if (cleanValue.length <= 5) {
+      return cleanValue;
+    }
+    return `${cleanValue.slice(0, 5)}-${cleanValue.slice(5, 8)}`;
+  };
 
   // Função para lidar com o envio do formulário
   const onSubmit = async (data: RegisterFormValues) => {
@@ -202,8 +260,10 @@ export function RegisterForm() {
           full_name: data.fullName,
           email: data.email,
           phone: data.phone,
-          whatsapp: data.phone,
-          address: data.location,
+          cep: data.cep.replace(/\D/g, ""),
+          state: data.state,
+          city: data.city,
+          address: `${data.location}, ${data.number}`,
           description: data.description,
           category_id: data.category,
           available: true,
@@ -315,11 +375,15 @@ export function RegisterForm() {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>WhatsApp</FormLabel>
+                  <FormLabel>Telefone</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="(99) 99999-9999"
                       {...field}
+                      onChange={(e) => {
+                        const formattedValue = formatPhone(e.target.value);
+                        field.onChange(formattedValue);
+                      }}
                       disabled={isLoading}
                     />
                   </FormControl>
@@ -332,26 +396,106 @@ export function RegisterForm() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Localização</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Bairro - Cidade/UF"
-                      {...field}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Ex: Vila Mariana - São Paulo/SP
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <FormField
+                control={form.control}
+                name="cep"
+                render={({ field }) => (
+                  <FormItem className="sm:col-span-1">
+                    <FormLabel>CEP</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="00000-000"
+                        {...field}
+                        onChange={(e) => {
+                          const formattedValue = formatCep(e.target.value);
+                          field.onChange(formattedValue);
+                          if (formattedValue.length === 9) {
+                            fetchAddressByCep(formattedValue);
+                          }
+                        }}
+                        disabled={isLoading || loadingCep}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem className="sm:col-span-1">
+                    <FormLabel>Estado</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="UF"
+                        {...field}
+                        disabled={isLoading || loadingCep}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem className="sm:col-span-1">
+                    <FormLabel>Cidade</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Cidade"
+                        {...field}
+                        disabled={isLoading || loadingCep}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="location"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Endereço</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Rua, Avenida, etc"
+                        {...field}
+                        disabled={isLoading || loadingCep}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Número</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Número"
+                        {...field}
+                        disabled={isLoading || loadingCep}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
