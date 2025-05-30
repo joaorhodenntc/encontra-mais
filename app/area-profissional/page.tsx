@@ -70,9 +70,7 @@ export default function ProfessionalAreaPage() {
 
         if (sessionError) {
           console.error("Erro ao verificar sessão:", sessionError);
-          setError(
-            "Erro ao verificar sua sessão. Por favor, faça login novamente."
-          );
+          router.push("/entrar");
           return;
         }
 
@@ -96,16 +94,12 @@ export default function ProfessionalAreaPage() {
             "Erro ao buscar dados do profissional:",
             professionalError
           );
-          setError(
-            "Erro ao carregar seus dados profissionais. Por favor, tente novamente."
-          );
+          router.push("/entrar");
           return;
         }
 
         if (!professionalData) {
-          setError(
-            "Perfil profissional não encontrado. Por favor, entre em contato com o suporte."
-          );
+          router.push("/entrar");
           return;
         }
 
@@ -127,7 +121,7 @@ export default function ProfessionalAreaPage() {
         }
       } catch (error) {
         console.error("Erro geral:", error);
-        setError("Ocorreu um erro inesperado. Por favor, tente novamente.");
+        router.push("/entrar");
       } finally {
         setLoading(false);
       }
@@ -198,20 +192,10 @@ export default function ProfessionalAreaPage() {
   if (!user || !professional) {
     return (
       <div className="container flex items-center justify-center px-4 py-16">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Acesso não autorizado</CardTitle>
-            <CardDescription>
-              Você precisa estar logado como profissional para acessar esta
-              página.
-            </CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Button onClick={() => router.push("/entrar")} className="w-full">
-              Fazer Login
-            </Button>
-          </CardFooter>
-        </Card>
+        <div className="text-center">
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+          <p className="mt-2">Carregando...</p>
+        </div>
       </div>
     );
   }
