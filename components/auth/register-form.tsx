@@ -38,6 +38,7 @@ const registerSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
   phone: z.string().min(10, "Número de telefone inválido"),
+  cpf: z.string().min(11, "CPF inválido").max(14, "CPF inválido"),
   cep: z.string().min(8, "CEP inválido").max(9, "CEP inválido"),
   state: z.string().min(2, "Estado é obrigatório"),
   city: z.string().min(2, "Cidade é obrigatória"),
@@ -167,6 +168,27 @@ export function RegisterForm() {
     )}-${cleanValue.slice(7, 11)}`;
   };
 
+  // Função para formatar CPF
+  const formatCpf = (value: string) => {
+    const cleanValue = value.replace(/\D/g, "");
+    if (cleanValue.length <= 3) {
+      return cleanValue;
+    }
+    if (cleanValue.length <= 6) {
+      return `${cleanValue.slice(0, 3)}.${cleanValue.slice(3)}`;
+    }
+    if (cleanValue.length <= 9) {
+      return `${cleanValue.slice(0, 3)}.${cleanValue.slice(
+        3,
+        6
+      )}.${cleanValue.slice(6)}`;
+    }
+    return `${cleanValue.slice(0, 3)}.${cleanValue.slice(
+      3,
+      6
+    )}.${cleanValue.slice(6, 9)}-${cleanValue.slice(9, 11)}`;
+  };
+
   // Configurar o formulário com React Hook Form e Zod
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -175,6 +197,7 @@ export function RegisterForm() {
       email: "",
       password: "",
       phone: "",
+      cpf: "",
       cep: "",
       state: "",
       city: "",
@@ -260,6 +283,7 @@ export function RegisterForm() {
           full_name: data.fullName,
           email: data.email,
           phone: data.phone,
+          cpf: data.cpf.replace(/\D/g, ""),
           cep: data.cep.replace(/\D/g, ""),
           state: data.state,
           city: data.city,
@@ -274,43 +298,40 @@ export function RegisterForm() {
 
       // 4. Enviar notificação para o Discord
       try {
-        await fetch(
-          "https://discord.com/api/webhooks/1379533749615726684/7ViSSFPdZaykh111yJeCcpNtC9--M4MCEmit8qgDam000kt57_4V9fWetXVgbAWGGLiX",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              username: "Notificador",
-              embeds: [
-                {
-                  title: "🆕 Novo Profissional Cadastrado",
-                  color: 0x00ff00,
-                  fields: [
-                    {
-                      name: "Nome",
-                      value: data.fullName,
-                    },
-                    {
-                      name: "Email",
-                      value: data.email,
-                    },
-                    {
-                      name: "Telefone",
-                      value: data.phone,
-                    },
-                    {
-                      name: "Cidade/Estado",
-                      value: `${data.city}/${data.state}`,
-                    },
-                  ],
-                  timestamp: new Date().toISOString(),
-                },
-              ],
-            }),
-          }
-        );
+        await fetch(`${process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_REGISTER}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: "Notificador",
+            embeds: [
+              {
+                title: "🆕 Novo Profissional Cadastrado",
+                color: 0x00ff00,
+                fields: [
+                  {
+                    name: "Nome",
+                    value: data.fullName,
+                  },
+                  {
+                    name: "Email",
+                    value: data.email,
+                  },
+                  {
+                    name: "Categoria",
+                    value: data.category,
+                  },
+                  {
+                    name: "Cidade/Estado",
+                    value: `${data.city}/${data.state}`,
+                  },
+                ],
+                timestamp: new Date().toISOString(),
+              },
+            ],
+          }),
+        });
       } catch (error) {
         console.error("Erro ao enviar notificação para o Discord:", error);
       }
@@ -434,6 +455,28 @@ export function RegisterForm() {
                     Este número será usado para que clientes entrem em contato
                     com você
                   </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="cpf"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>CPF</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="000.000.000-00"
+                      {...field}
+                      onChange={(e) => {
+                        const formattedValue = formatCpf(e.target.value);
+                        field.onChange(formattedValue);
+                      }}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
