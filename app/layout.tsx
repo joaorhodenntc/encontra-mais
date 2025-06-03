@@ -9,9 +9,12 @@ import { Footer } from "@/components/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "EncontraMais | Conectando profissionais e clientes",
+  title:
+    "encontramais.com.br | Encontre os melhores profissionais para seus serviços",
   description: "Encontre os melhores profissionais para seus serviços",
-  generator: "v0.dev",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
