@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -9,6 +10,13 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6 md:gap-10">
           <Link href="/" className="flex items-center space-x-2">
+            <Image
+              src="/logo.png"
+              alt="Logo Encontra+"
+              width={30}
+              height={30}
+              className="object-contain mr-1"
+            />
             <span className="text-2xl font-bold text-[#f97316]">Encontra+</span>
           </Link>
           <nav className="hidden gap-6 md:flex">
