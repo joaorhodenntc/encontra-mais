@@ -39,6 +39,7 @@ type Professional = {
   avatar_url: string | null;
   created_at: string;
   updated_at: string;
+  subscription_status: "free" | "premium";
 };
 
 type Category = {
@@ -49,6 +50,15 @@ type Category = {
   description: string | null;
 };
 
+type Subscription = {
+  id: string;
+  professional_id: string;
+  status: "active" | "cancelled" | "pending";
+  start_date: string;
+  end_date: string | null;
+  created_at: string;
+};
+
 export default function ProfessionalAreaPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -57,6 +67,7 @@ export default function ProfessionalAreaPage() {
   const [user, setUser] = useState<any>(null);
   const [professional, setProfessional] = useState<Professional | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -117,6 +128,22 @@ export default function ProfessionalAreaPage() {
           } else {
             setCategory(categoryData);
           }
+        }
+
+        // Buscar assinatura
+        const { data: subscriptionData, error: subscriptionError } =
+          await supabase
+            .from("subscriptions")
+            .select("*")
+            .eq("professional_id", session.user.id)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .single();
+
+        if (subscriptionError && subscriptionError.code !== "PGRST116") {
+          console.error("Erro ao buscar assinatura:", subscriptionError);
+        } else {
+          setSubscription(subscriptionData);
         }
       } catch (error) {
         console.error("Erro geral:", error);
@@ -300,25 +327,57 @@ export default function ProfessionalAreaPage() {
         <Card>
           <CardHeader>
             <CardTitle>Seu Plano</CardTitle>
-            <CardDescription>Plano Premium</CardDescription>
+            <CardDescription>
+              {professional.subscription_status === "free"
+                ? "Plano Gratuito"
+                : "Plano Premium"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              <p>
-                <strong>Valor:</strong> R$ 19,99/mês
-              </p>
-              <p>
-                <strong>Status:</strong> Ativo
-              </p>
-              <p>
-                <strong>Próxima cobrança:</strong> 15/06/2025
-              </p>
+              {professional.subscription_status === "free" ? (
+                <>
+                  <p>
+                    <strong>Plano atual:</strong> Gratuito
+                  </p>
+                  <p className="text-muted-foreground">
+                    Aproveite todos os recursos com nosso plano Premium
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    <strong>Valor:</strong> R$ 19,99/mês
+                  </p>
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    {subscription?.status === "active" ? "Ativo" : "Pendente"}
+                  </p>
+                  {subscription?.end_date && (
+                    <p>
+                      <strong>Próxima cobrança:</strong>{" "}
+                      {new Date(subscription.end_date).toLocaleDateString(
+                        "pt-BR"
+                      )}
+                    </p>
+                  )}
+                </>
+              )}
             </div>
           </CardContent>
           <CardFooter>
-            <Button variant="outline" className="w-full">
-              Gerenciar Assinatura
-            </Button>
+            {professional.subscription_status === "free" ? (
+              <Button
+                className="w-full bg-[#f97316] hover:bg-[#ea580c]"
+                asChild
+              >
+                <Link href="/area-profissional/assinar">Assinar Agora</Link>
+              </Button>
+            ) : (
+              <Button variant="outline" className="w-full">
+                Gerenciar Assinatura
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </div>
