@@ -272,6 +272,49 @@ export function RegisterForm() {
           updated_at: new Date().toISOString(),
         });
 
+      // 4. Enviar notificação para o Discord
+      try {
+        await fetch(
+          "https://discord.com/api/webhooks/1379533749615726684/7ViSSFPdZaykh111yJeCcpNtC9--M4MCEmit8qgDam000kt57_4V9fWetXVgbAWGGLiX",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: "Notificador",
+              embeds: [
+                {
+                  title: "🆕 Novo Profissional Cadastrado",
+                  color: 0x00ff00,
+                  fields: [
+                    {
+                      name: "Nome",
+                      value: data.fullName,
+                    },
+                    {
+                      name: "Email",
+                      value: data.email,
+                    },
+                    {
+                      name: "Telefone",
+                      value: data.phone,
+                    },
+                    {
+                      name: "Cidade/Estado",
+                      value: `${data.city}/${data.state}`,
+                    },
+                  ],
+                  timestamp: new Date().toISOString(),
+                },
+              ],
+            }),
+          }
+        );
+      } catch (error) {
+        console.error("Erro ao enviar notificação para o Discord:", error);
+      }
+
       if (professionalError) {
         console.error("Erro ao criar profissional:", professionalError);
         throw new Error(
@@ -279,7 +322,7 @@ export function RegisterForm() {
         );
       }
 
-      // 4. Redirecionar para a página inicial após o cadastro
+      // 5. Redirecionar para a página inicial após o cadastro
       router.push("/");
     } catch (error: any) {
       console.error("Erro no cadastro:", error);
