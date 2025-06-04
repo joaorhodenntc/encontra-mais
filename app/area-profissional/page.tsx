@@ -256,16 +256,15 @@ export default function ProfessionalAreaPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+        <Card className="md:row-span-2">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center">
               <User className="mr-2 h-5 w-5" />
               Perfil
             </CardTitle>
-            <CardDescription>Seu perfil profissional</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4">
+            <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4 mt-2">
               <Avatar className="h-24 w-24 border-4 border-[#f97316]">
                 <AvatarImage
                   src={professional.avatar_url || ""}
@@ -324,62 +323,130 @@ export default function ProfessionalAreaPage() {
           </CardFooter>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Seu Plano</CardTitle>
-            <CardDescription>
-              {professional.subscription_status === "free"
-                ? "Plano Gratuito"
-                : "Plano Premium"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {professional.subscription_status === "free" ? (
-                <>
-                  <p>
-                    <strong>Plano atual:</strong> Gratuito
-                  </p>
-                  <p className="text-muted-foreground">
-                    Aproveite todos os recursos com nosso plano Premium
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p>
-                    <strong>Valor:</strong> R$ 19,99/mês
-                  </p>
-                  <p>
-                    <strong>Status:</strong>{" "}
-                    {subscription?.status === "active" ? "Ativo" : "Pendente"}
-                  </p>
-                  {subscription?.end_date && (
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Seu Plano</CardTitle>
+              <CardDescription>
+                {professional.subscription_status === "free"
+                  ? "Plano Gratuito"
+                  : "Plano Premium"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {professional.subscription_status === "free" ? (
+                  <>
                     <p>
-                      <strong>Próxima cobrança:</strong>{" "}
-                      {new Date(subscription.end_date).toLocaleDateString(
-                        "pt-BR"
-                      )}
+                      <strong>Plano atual:</strong> Gratuito
                     </p>
-                  )}
-                </>
+                    <p className="text-muted-foreground">
+                      Aproveite todos os recursos com nosso plano Premium
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      <strong>Valor:</strong> R$ 19,99/mês
+                    </p>
+                    <p>
+                      <strong>Status:</strong>{" "}
+                      {subscription?.status === "active" ? "Ativo" : "Pendente"}
+                    </p>
+                    {subscription?.end_date && (
+                      <p>
+                        <strong>Próxima cobrança:</strong>{" "}
+                        {new Date(subscription.end_date).toLocaleDateString(
+                          "pt-BR"
+                        )}
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
+            </CardContent>
+            <CardFooter>
+              {professional.subscription_status === "free" ? (
+                <Button
+                  className="w-full bg-[#f97316] hover:bg-[#ea580c]"
+                  asChild
+                >
+                  <Link href="/area-profissional/assinar">Assinar Agora</Link>
+                </Button>
+              ) : (
+                <Button variant="outline" className="w-full">
+                  Gerenciar Assinatura
+                </Button>
               )}
-            </div>
-          </CardContent>
-          <CardFooter>
-            {professional.subscription_status === "free" ? (
-              <Button
-                className="w-full bg-[#f97316] hover:bg-[#ea580c]"
-                asChild
-              >
-                <Link href="/area-profissional/assinar">Assinar Agora</Link>
-              </Button>
-            ) : (
-              <Button variant="outline" className="w-full">
-                Gerenciar Assinatura
-              </Button>
-            )}
-          </CardFooter>
-        </Card>
+            </CardFooter>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Status da Conta</CardTitle>
+              <CardDescription>
+                {professional.verified
+                  ? "Conta Verificada"
+                  : "Conta Pendente de Verificação"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {professional.verified ? (
+                  <div className="flex items-center gap-2 text-green-600">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-5 w-5"
+                    >
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    <p>Sua conta está verificada e ativa</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-yellow-600">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                      <p>Sua conta ainda não está verificada</p>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Para ter acesso a todos os recursos e aumentar sua
+                      visibilidade, é necessário verificar sua conta.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+            <CardFooter>
+              {!professional.verified && (
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/area-profissional/verificar-conta">
+                    Verificar Conta
+                  </Link>
+                </Button>
+              )}
+            </CardFooter>
+          </Card>
+        </div>
       </div>
 
       <div className="mt-8">
