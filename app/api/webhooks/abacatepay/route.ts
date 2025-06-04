@@ -66,6 +66,7 @@ export async function POST(request: Request) {
 
 async function handleBillingCreated(data: any) {
   console.log("Cobrança criada:", data);
+
   // Atualizar status da assinatura para pending
   const { error } = await supabaseAdmin
     .from("subscriptions")
@@ -189,6 +190,41 @@ async function handleBillingPaid(data: any) {
     "Assinatura ativada com sucesso para o profissional:",
     professionalId
   );
+
+  // Enviar notificação para o Discord
+  await fetch(`${process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_PAYMENTS}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username: "Notificador",
+      embeds: [
+        {
+          title: "💰 Nova Assinatura",
+          color: 0xf87115,
+          fields: [
+            {
+              name: "Profissional",
+              value: data.billing.customer.metadata.name,
+            },
+            {
+              name: "Email",
+              value: data.billing.customer.metadata.email,
+            },
+            {
+              name: "Valor",
+              value: `R$ ${(data.billing.amount / 100).toFixed(2)}`,
+            },
+            {
+              name: "Status",
+              value: "Pago ✅",
+            },
+          ],
+        },
+      ],
+    }),
+  });
 }
 
 async function handleBillingCanceled(data: any) {
@@ -224,11 +260,4 @@ async function handleBillingFailed(data: any) {
     "Assinatura cancelada devido a falha no pagamento para o profissional:",
     professionalId
   );
-}
-
-function verifyWebhookSignature(payload: string, signature: string): boolean {
-  // Implementar a verificação da assinatura do webhook
-  // Este é um exemplo simplificado, você deve implementar a verificação real
-  // de acordo com a documentação do AbacatePay
-  return true;
 }
