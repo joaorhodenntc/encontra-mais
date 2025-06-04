@@ -114,14 +114,6 @@ export function LoginForm() {
             return;
           }
 
-          if (!professionalData.verified) {
-            setLoginError(
-              "Seu perfil ainda não foi verificado. Entre em contato com o suporte."
-            );
-            await supabase.auth.signOut();
-            return;
-          }
-
           toast({
             title: "Login realizado com sucesso!",
             description: "Você será redirecionado para a área do profissional.",
@@ -169,16 +161,6 @@ export function LoginForm() {
       if (!professionalData) {
         setLoginError(
           "Seu perfil profissional não foi encontrado. Entre em contato com o suporte."
-        );
-        // Fazer logout para limpar a sessão
-        await supabase.auth.signOut();
-        return;
-      }
-
-      // 3. Verificar se o profissional está verificado
-      if (!professionalData.verified) {
-        setLoginError(
-          "Seu perfil ainda não foi verificado. Entre em contato com o suporte."
         );
         // Fazer logout para limpar a sessão
         await supabase.auth.signOut();

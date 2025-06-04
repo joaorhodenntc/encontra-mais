@@ -291,13 +291,24 @@ export function RegisterForm() {
           description: data.description,
           category_id: data.category,
           available: true,
-          verified: true,
+          verified: false,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         });
 
       // 4. Enviar notificação para o Discord
       try {
+        // Buscar o nome da categoria
+        const { data: categoryData, error: categoryError } = await supabase
+          .from("categories")
+          .select("name")
+          .eq("id", data.category)
+          .single();
+
+        if (categoryError) {
+          console.error("Erro ao buscar categoria:", categoryError);
+        }
+
         await fetch(`${process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_REGISTER}`, {
           method: "POST",
           headers: {
@@ -320,7 +331,7 @@ export function RegisterForm() {
                   },
                   {
                     name: "Categoria",
-                    value: data.category,
+                    value: categoryData?.name || "Categoria não encontrada",
                   },
                   {
                     name: "Cidade/Estado",
