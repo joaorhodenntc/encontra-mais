@@ -12,30 +12,6 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// Função para gerar um CPF válido para teste
-function generateValidCPF() {
-  const cpf = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
-
-  // Primeiro dígito verificador
-  let sum = 0;
-  for (let i = 0; i < 9; i++) {
-    sum += cpf[i] * (10 - i);
-  }
-  let digit = 11 - (sum % 11);
-  cpf.push(digit > 9 ? 0 : digit);
-
-  // Segundo dígito verificador
-  sum = 0;
-  for (let i = 0; i < 10; i++) {
-    sum += cpf[i] * (11 - i);
-  }
-  digit = 11 - (sum % 11);
-  cpf.push(digit > 9 ? 0 : digit);
-
-  // Formatar CPF
-  return cpf.join("").replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-}
-
 export async function POST(request: Request) {
   try {
     const { userId, email } = await request.json();
@@ -52,7 +28,7 @@ export async function POST(request: Request) {
     // Buscar dados do profissional
     const { data: professionalData, error: professionalError } = await supabase
       .from("professionals")
-      .select("full_name, phone, abacate_pay_customer_id")
+      .select("full_name, phone, abacate_pay_customer_id, cpf")
       .eq("id", userId)
       .single();
 
@@ -64,7 +40,6 @@ export async function POST(request: Request) {
     }
 
     let customerId;
-    let testCPF;
 
     // Se o profissional já tem um customer_id do AbacatePay, usar ele
     if (professionalData.abacate_pay_customer_id) {
@@ -74,10 +49,6 @@ export async function POST(request: Request) {
       );
       customerId = professionalData.abacate_pay_customer_id;
     } else {
-      // Gerar CPF válido para teste
-      testCPF = generateValidCPF();
-      console.log("CPF gerado para teste:", testCPF);
-
       // Criar o cliente no AbacatePay
       const customerResponse = await fetch(
         `${ABACATE_PAY_API_URL}/customer/create`,
@@ -91,7 +62,7 @@ export async function POST(request: Request) {
             name: professionalData.full_name,
             cellphone: professionalData.phone,
             email: email,
-            taxId: testCPF,
+            taxId: professionalData.cpf,
             metadata: {
               externalId: userId,
             },
@@ -146,7 +117,7 @@ export async function POST(request: Request) {
         name: professionalData.full_name,
         cellphone: professionalData.phone,
         email: email,
-        taxId: testCPF || "", // Usar CPF vazio se não foi gerado
+        taxId: professionalData.cpf,
         metadata: {
           externalId: userId,
         },
