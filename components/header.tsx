@@ -11,13 +11,15 @@ export function Header() {
         <div className="flex items-center gap-6 md:gap-10">
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/logo.png"
-              alt="Logo Encontra+"
-              width={30}
-              height={30}
-              className="object-contain mr-1"
+              src="/logo-e.png"
+              alt="Encontra+ Logo"
+              width={50}
+              height={50}
+              className="mt-1 md:hidden"
             />
-            <span className="text-2xl font-bold text-[#f97316]">Encontra+</span>
+            <span className="hidden md:block text-2xl font-bold text-[#f97316]">
+              Encontra+
+            </span>
           </Link>
           <nav className="hidden gap-6 md:flex">
             <Link
