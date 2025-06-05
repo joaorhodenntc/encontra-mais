@@ -40,12 +40,14 @@ const personalProfileSchema = z.object({
   address: z.string().min(3, "Endereço é obrigatório"),
   city: z.string().min(2, "Cidade é obrigatória"),
   state: z.string().min(2, "Estado é obrigatório"),
-  postalCode: z.string().optional(),
+  cep: z.string().optional(),
 });
 
 // Esquema de validação para o formulário de perfil profissional
 const professionalProfileSchema = z.object({
-  bio: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
+  description: z
+    .string()
+    .min(10, "Descrição deve ter pelo menos 10 caracteres"),
   category: z.string().uuid("Selecione uma categoria válida"),
   available: z.boolean(),
 });
@@ -90,14 +92,14 @@ export default function EditProfilePage() {
       address: "",
       city: "",
       state: "",
-      postalCode: "",
+      cep: "",
     },
   });
 
   const professionalForm = useForm<ProfessionalProfileFormValues>({
     resolver: zodResolver(professionalProfileSchema),
     defaultValues: {
-      bio: "",
+      description: "",
       category: "",
       available: true,
     },
@@ -181,12 +183,12 @@ export default function EditProfilePage() {
           address: profileData.address || "",
           city: profileData.city || "",
           state: profileData.state || "",
-          postalCode: profileData.postal_code || "",
+          cep: profileData.cep || "",
         });
 
         // Preencher formulário profissional
         professionalForm.reset({
-          bio: professionalData.bio || "",
+          description: professionalData.description || "",
           category: professionalData.category_id || "",
           available: professionalData.available || false,
         });
@@ -219,14 +221,14 @@ export default function EditProfilePage() {
     try {
       // Atualizar perfil pessoal
       const { error: updateError } = await supabase
-        .from("profiles")
+        .from("professionals")
         .update({
           full_name: data.fullName,
           email: data.email,
           address: data.address,
           city: data.city,
           state: data.state,
-          postal_code: data.postalCode,
+          cep: data.cep,
         })
         .eq("id", user.id);
 
@@ -261,7 +263,7 @@ export default function EditProfilePage() {
       const { error: updateError } = await supabase
         .from("professionals")
         .update({
-          bio: data.bio,
+          description: data.description,
           category_id: data.category,
           available: data.available,
         })
@@ -473,7 +475,7 @@ export default function EditProfilePage() {
 
                       <FormField
                         control={personalForm.control}
-                        name="postalCode"
+                        name="cep"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>CEP</FormLabel>
@@ -595,7 +597,7 @@ export default function EditProfilePage() {
 
                     <FormField
                       control={professionalForm.control}
-                      name="bio"
+                      name="description"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Descrição profissional</FormLabel>

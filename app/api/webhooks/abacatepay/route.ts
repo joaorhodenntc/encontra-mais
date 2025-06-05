@@ -201,7 +201,7 @@ async function handleBillingPaid(data: any) {
       username: "Notificador",
       embeds: [
         {
-          title: "✅ Nova Assinatura",
+          title: "💰 Nova Assinatura",
           color: 0xf87115,
           fields: [
             {
