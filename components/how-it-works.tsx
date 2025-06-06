@@ -3,7 +3,7 @@ import { Search, UserCheck, MessageCircle } from "lucide-react"
 
 export function HowItWorks() {
   return (
-    <section className="bg-gray-50 py-16">
+    <section id="como-funciona" className="bg-gray-50 py-16">
       <div className="container px-4">
         <div className="mb-10 text-center">
           <h2 className="mb-2 text-3xl font-bold tracking-tight">Como Funciona</h2>

@@ -10,8 +10,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title:
-    "encontramais.com.br | Encontre os melhores profissionais para seus serviços",
-  description: "Encontre os melhores profissionais para seus serviços",
+    "encontramais.com.br - Seu marketplace de serviços: encontre ou divulgue com praticidade",
+  description: "Mais de 500 profissionais cadastrados em todo o Brasil",
   icons: {
     icon: "/favicon.png",
   },
