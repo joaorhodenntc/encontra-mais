@@ -347,7 +347,7 @@ export default function ProfessionalAreaPage() {
                 ) : (
                   <>
                     <p>
-                      <strong>Valor:</strong> R$ 19,99/mês
+                      <strong>Valor:</strong> R$ 29,90/mês
                     </p>
                     <p>
                       <strong>Status:</strong>{" "}

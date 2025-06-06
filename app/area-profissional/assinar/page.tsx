@@ -165,7 +165,7 @@ export default function AssinarPage() {
                       Cobrança mensal
                     </p>
                   </div>
-                  <p className="text-2xl font-bold">R$ 19,99</p>
+                  <p className="text-2xl font-bold">R$ 29,90</p>
                 </div>
               </div>
 

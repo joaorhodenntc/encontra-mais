@@ -1,7 +1,14 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Check } from "lucide-react"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Check } from "lucide-react";
+import Link from "next/link";
 
 export default function PlanosPage() {
   return (
@@ -10,9 +17,12 @@ export default function PlanosPage() {
         <section className="bg-gradient-to-b from-[#f97316] to-[#ea580c] py-20 text-white">
           <div className="container px-4">
             <div className="mx-auto max-w-3xl text-center">
-              <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">Plano para Profissionais</h1>
+              <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">
+                Plano para Profissionais
+              </h1>
               <p className="mb-8 text-xl text-white/90">
-                Aumente sua visibilidade e conquiste mais clientes com o Encontra+
+                Aumente sua visibilidade e conquiste mais clientes com o
+                Encontra+
               </p>
             </div>
           </div>
@@ -24,9 +34,11 @@ export default function PlanosPage() {
               <Card className="border-2 border-[#f97316] shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-2xl">Plano Premium</CardTitle>
-                  <CardDescription>Para profissionais que querem crescer</CardDescription>
+                  <CardDescription>
+                    Para profissionais que querem crescer
+                  </CardDescription>
                   <div className="mt-4 text-4xl font-bold">
-                    R$ 19,99<span className="text-base font-normal">/mês</span>
+                    R$ 29,90<span className="text-base font-normal">/mês</span>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -50,33 +62,46 @@ export default function PlanosPage() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full bg-[#f97316] hover:bg-[#ea580c]" asChild>
+                  <Button
+                    className="w-full bg-[#f97316] hover:bg-[#ea580c]"
+                    asChild
+                  >
                     <Link href="/cadastro/profissional">Assinar Agora</Link>
                   </Button>
                 </CardFooter>
               </Card>
 
               <div className="mt-16">
-                <h2 className="text-2xl font-bold mb-6 text-center">Perguntas Frequentes</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center">
+                  Perguntas Frequentes
+                </h2>
                 <div className="space-y-6">
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-medium mb-2">Como funciona o pagamento?</h3>
+                    <h3 className="text-lg font-medium mb-2">
+                      Como funciona o pagamento?
+                    </h3>
                     <p className="text-gray-600">
-                      O pagamento é feito mensalmente via cartão de crédito, boleto ou PIX. 
+                      O pagamento é feito mensalmente via cartão de crédito,
+                      boleto ou PIX.
                     </p>
                   </div>
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-medium mb-2">Como funciona a comunicação com os clientes?</h3>
+                    <h3 className="text-lg font-medium mb-2">
+                      Como funciona a comunicação com os clientes?
+                    </h3>
                     <p className="text-gray-600">
-                      Toda comunicação é feita diretamente via WhatsApp. Os clientes podem entrar em contato com você
-                      pelo número cadastrado em seu perfil.
+                      Toda comunicação é feita diretamente via WhatsApp. Os
+                      clientes podem entrar em contato com você pelo número
+                      cadastrado em seu perfil.
                     </p>
                   </div>
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-medium mb-2">Existe alguma taxa por serviço contratado?</h3>
+                    <h3 className="text-lg font-medium mb-2">
+                      Existe alguma taxa por serviço contratado?
+                    </h3>
                     <p className="text-gray-600">
-                      Não, cobramos apenas a mensalidade do plano. Não há taxas adicionais por serviços contratados
-                      através da plataforma.
+                      Não, cobramos apenas a mensalidade do plano. Não há taxas
+                      adicionais por serviços contratados através da plataforma.
                     </p>
                   </div>
                 </div>
@@ -86,5 +111,5 @@ export default function PlanosPage() {
         </section>
       </main>
     </div>
-  )
+  );
 }

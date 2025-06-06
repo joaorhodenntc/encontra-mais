@@ -107,7 +107,7 @@ export async function POST(request: Request) {
           name: "Plano Premium",
           description: "Acesso ao plano premium por 1 mês",
           quantity: 1,
-          price: 1999,
+          price: 2990,
         },
       ],
       returnUrl: `${process.env.NEXT_PUBLIC_APP_URL}/area-profissional?success=true`,
