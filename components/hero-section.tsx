@@ -44,7 +44,7 @@ export function HeroSection() {
               Encontre os melhores profissionais gratuitamente
             </h1>
             <p className="mb-10 text-xl text-white/90">
-              Conectamos você aos profissionais qualificados mais próximos de você. Rápido, seguro e confiável.
+            Seu marketplace de serviços: encontre ou divulgue com praticidade.
             </p>
 
             <div className="bg-white rounded-lg p-2 flex shadow-lg mb-8">

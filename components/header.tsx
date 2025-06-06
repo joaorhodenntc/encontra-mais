@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { Session } from "@supabase/supabase-js";
+import { usePathname } from "next/navigation";
 
 export function Header() {
   const [session, setSession] = useState<Session | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const getSession = async () => {
@@ -29,6 +31,16 @@ export function Header() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const handleComoFuncionaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      const howItWorksSection = document.querySelector("#como-funciona");
+      if (howItWorksSection) {
+        howItWorksSection.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -59,8 +71,9 @@ export function Header() {
               Planos
             </Link>
             <Link
-              href="/como-funciona"
+              href="/#como-funciona"
               className="text-sm font-medium transition-colors hover:text-[#f97316]"
+              onClick={handleComoFuncionaClick}
             >
               Como Funciona
             </Link>
