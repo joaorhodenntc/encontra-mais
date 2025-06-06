@@ -81,7 +81,7 @@ export function Header() {
                 className="hover:bg-[#f97316] hover:text-white"
                 asChild
               >
-                <Link href="/login">Entrar</Link>
+                <Link href="/entrar">Entrar</Link>
               </Button>
               <Button
                 className="bg-[#f97316] hover:bg-[#ea580c] text-white"
