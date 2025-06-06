@@ -21,10 +21,12 @@ import {
   Edit,
   MapPin,
   Phone,
+  Instagram,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
+import { InstagramStoryModal } from "@/components/social/instagram-story-modal";
 
 type Professional = {
   id: string;
@@ -68,6 +70,7 @@ export default function ProfessionalAreaPage() {
   const [professional, setProfessional] = useState<Professional | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [storyModalOpen, setStoryModalOpen] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -242,6 +245,10 @@ export default function ProfessionalAreaPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Área do Profissional</h1>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setStoryModalOpen(true)}>
+            <Instagram className="mr-2 h-4 w-4" />
+            Gerar Story
+          </Button>
           <Button variant="outline" asChild>
             <Link href="/area-profissional/editar-perfil">
               <Edit className="mr-2 h-4 w-4" />
@@ -479,6 +486,15 @@ export default function ProfessionalAreaPage() {
           </CardContent>
         </Card>
       </div>
+
+      {professional && category && (
+        <InstagramStoryModal
+          open={storyModalOpen}
+          onOpenChange={setStoryModalOpen}
+          professional={professional}
+          category={category}
+        />
+      )}
     </div>
   );
 }
