@@ -35,7 +35,9 @@ export function InstagramStoryModal({
   category,
 }: InstagramStoryModalProps) {
   const [downloading, setDownloading] = useState(false);
-  const [customMessage, setCustomMessage] = useState("Me encontra na Encontramais!");
+  const [customMessage, setCustomMessage] = useState(
+    "Me encontra na Encontramais!"
+  );
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newMessage = e.target.value;
@@ -47,7 +49,9 @@ export function InstagramStoryModal({
   const handleDownload = async () => {
     try {
       setDownloading(true);
-      const storyElement = document.querySelector("#story-preview") as HTMLElement;
+      const storyElement = document.querySelector(
+        "#story-preview"
+      ) as HTMLElement;
       if (!storyElement) return;
 
       const originalClassName = storyElement.className;
@@ -55,7 +59,6 @@ export function InstagramStoryModal({
 
       const canvas = await html2canvas(storyElement, {
         useCORS: true,
-        background: undefined,
         width: 1080,
         height: 1920,
         logging: false,
@@ -64,9 +67,11 @@ export function InstagramStoryModal({
       storyElement.className = originalClassName;
 
       const image = canvas.toDataURL("image/png", 1.0);
-      
+
       const link = document.createElement("a");
-      link.download = `encontramais-story-${professional.full_name.toLowerCase().replace(/\s+/g, "-")}.png`;
+      link.download = `encontramais-story-${professional.full_name
+        .toLowerCase()
+        .replace(/\s+/g, "-")}.png`;
       link.href = image;
       link.click();
     } catch (error) {
@@ -91,7 +96,10 @@ export function InstagramStoryModal({
           <div>
             <div className="aspect-[9/16] w-full max-w-[360px] mx-auto overflow-hidden rounded-xl border shadow-lg bg-gradient-to-br from-orange-100 to-orange-50 p-2">
               <div className="relative w-full h-full rounded-lg overflow-hidden shadow-inner">
-                <div id="story-preview" className="scale-[0.3333] origin-top-left w-[1080px] h-[1920px]">
+                <div
+                  id="story-preview"
+                  className="scale-[0.3333] origin-top-left w-[1080px] h-[1920px]"
+                >
                   <InstagramStory
                     name={professional.full_name}
                     profession={category.name}
@@ -115,7 +123,13 @@ export function InstagramStoryModal({
                   maxLength={40}
                 />
                 <div className="flex justify-end text-xs text-muted-foreground">
-                  <span className={customMessage.length === 40 ? "text-orange-500 font-medium" : ""}>
+                  <span
+                    className={
+                      customMessage.length === 40
+                        ? "text-orange-500 font-medium"
+                        : ""
+                    }
+                  >
                     {customMessage.length}/40 caracteres
                   </span>
                 </div>
@@ -156,8 +170,9 @@ export function InstagramStoryModal({
             <Alert>
               <AlertTitle>Dica profissional</AlertTitle>
               <AlertDescription className="text-sm">
-                Publique este story nos destaques do seu perfil para que os clientes
-                sempre possam encontrar seu perfil profissional na plataforma.
+                Publique este story nos destaques do seu perfil para que os
+                clientes sempre possam encontrar seu perfil profissional na
+                plataforma.
               </AlertDescription>
             </Alert>
           </div>
@@ -165,4 +180,4 @@ export function InstagramStoryModal({
       </DialogContent>
     </Dialog>
   );
-} 
+}
