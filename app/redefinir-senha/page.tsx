@@ -1,56 +1,74 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { z } from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { supabase } from "@/lib/supabase/client"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { useToast } from "@/components/ui/use-toast"
-import { Loader2, AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react"
-import Link from "next/link"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { supabase } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2, AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Esquema de validação para o formulário de redefinição de senha
 const newPasswordSchema = z
   .object({
     password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
-    confirmPassword: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+    confirmPassword: z
+      .string()
+      .min(6, "A senha deve ter pelo menos 6 caracteres"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "As senhas não coincidem",
     path: ["confirmPassword"],
-  })
+  });
 
-type NewPasswordFormValues = z.infer<typeof newPasswordSchema>
+type NewPasswordFormValues = z.infer<typeof newPasswordSchema>;
 
 export default function ResetPasswordPage() {
-  const { toast } = useToast()
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [formError, setFormError] = useState<string | null>(null)
-  const [resetSuccess, setResetSuccess] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isValidLink, setIsValidLink] = useState(true)
+  const { toast } = useToast();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isValidLink, setIsValidLink] = useState(true);
 
   // Verificar se o usuário está autenticado com um token de recuperação de senha
   useEffect(() => {
     const checkSession = async () => {
-      const { data, error } = await supabase.auth.getSession()
+      const { data, error } = await supabase.auth.getSession();
 
       if (error || !data.session) {
-        setIsValidLink(false)
-        setFormError("Link de recuperação inválido ou expirado. Solicite um novo link.")
+        setIsValidLink(false);
+        setFormError(
+          "Link de recuperação inválido ou expirado. Solicite um novo link."
+        );
       }
-    }
+    };
 
-    checkSession()
-  }, [])
+    checkSession();
+  }, []);
 
   // Configurar o formulário com React Hook Form e Zod
   const form = useForm<NewPasswordFormValues>({
@@ -59,40 +77,43 @@ export default function ResetPasswordPage() {
       password: "",
       confirmPassword: "",
     },
-  })
+  });
 
   // Função para lidar com o envio do formulário
   const onSubmit = async (data: NewPasswordFormValues) => {
-    setIsLoading(true)
-    setFormError(null)
+    setIsLoading(true);
+    setFormError(null);
 
     try {
       // Atualizar a senha
       const { error } = await supabase.auth.updateUser({
         password: data.password,
-      })
+      });
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
       }
 
       // Sucesso
-      setResetSuccess(true)
+      setResetSuccess(true);
 
       // Fazer logout para garantir que o usuário faça login com a nova senha
-      await supabase.auth.signOut()
+      await supabase.auth.signOut();
     } catch (error: any) {
-      console.error("Erro ao redefinir senha:", error)
-      setFormError(error.message || "Ocorreu um erro ao redefinir sua senha. Tente novamente.")
+      console.error("Erro ao redefinir senha:", error);
+      setFormError(
+        error.message ||
+          "Ocorreu um erro ao redefinir sua senha. Tente novamente."
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   // Se a redefinição foi bem-sucedida, mostrar mensagem de confirmação
   if (resetSuccess) {
     return (
-      <Card className="mx-auto w-full max-w-md">
+      <Card className="mx-auto w-full max-w-md my-10">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Senha Redefinida</CardTitle>
           <CardDescription>Sua senha foi alterada com sucesso</CardDescription>
@@ -100,9 +121,12 @@ export default function ResetPasswordPage() {
         <CardContent>
           <Alert className="mb-6 bg-green-50">
             <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertTitle className="text-green-600">Senha alterada com sucesso</AlertTitle>
+            <AlertTitle className="text-green-600">
+              Senha alterada com sucesso
+            </AlertTitle>
             <AlertDescription>
-              Sua senha foi redefinida com sucesso. Agora você pode fazer login com sua nova senha.
+              Sua senha foi redefinida com sucesso. Agora você pode fazer login
+              com sua nova senha.
             </AlertDescription>
           </Alert>
 
@@ -113,24 +137,26 @@ export default function ResetPasswordPage() {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   // Se o link for inválido, mostrar mensagem de erro
   if (!isValidLink) {
     return (
-      <Card className="mx-auto w-full max-w-md">
+      <Card className="mx-auto w-full max-w-md my-10">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Link Inválido</CardTitle>
-          <CardDescription>O link de recuperação de senha é inválido ou expirou</CardDescription>
+          <CardDescription>
+            O link de recuperação de senha é inválido ou expirou
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Alert variant="destructive" className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Link inválido</AlertTitle>
             <AlertDescription>
-              O link de recuperação de senha que você está tentando usar é inválido ou expirou. Por favor, solicite um
-              novo link.
+              O link de recuperação de senha que você está tentando usar é
+              inválido ou expirou. Por favor, solicite um novo link.
             </AlertDescription>
           </Alert>
 
@@ -141,7 +167,7 @@ export default function ResetPasswordPage() {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -184,8 +210,14 @@ export default function ResetPasswordPage() {
                         className="absolute right-0 top-0"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        <span className="sr-only">{showPassword ? "Esconder senha" : "Mostrar senha"}</span>
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                        <span className="sr-only">
+                          {showPassword ? "Esconder senha" : "Mostrar senha"}
+                        </span>
                       </Button>
                     </div>
                     <FormMessage />
@@ -213,10 +245,20 @@ export default function ResetPasswordPage() {
                         variant="ghost"
                         size="icon"
                         className="absolute right-0 top-0"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                       >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        <span className="sr-only">{showConfirmPassword ? "Esconder senha" : "Mostrar senha"}</span>
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                        <span className="sr-only">
+                          {showConfirmPassword
+                            ? "Esconder senha"
+                            : "Mostrar senha"}
+                        </span>
                       </Button>
                     </div>
                     <FormMessage />
@@ -247,5 +289,5 @@ export default function ResetPasswordPage() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }

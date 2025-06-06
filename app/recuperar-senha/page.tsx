@@ -56,9 +56,22 @@ export default function ResetPasswordPage() {
     setFormError(null);
 
     try {
+      // Verificar se o email existe no banco de dados
+      const { data: userData, error: userError } = await supabase
+        .from("professionals")
+        .select("email")
+        .eq("email", data.email)
+        .single();
+
+      if (userError || !userData) {
+        throw new Error(
+          "Este email não está cadastrado em nossa base de dados."
+        );
+      }
+
       // Enviar email de recuperação de senha
       const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/redefinir-senha`,
+        redirectTo: "https://www.encontramais.com.br/redefinir-senha",
       });
 
       if (error) {
@@ -82,7 +95,7 @@ export default function ResetPasswordPage() {
   // Se a solicitação foi bem-sucedida, mostrar mensagem de confirmação
   if (resetSuccess) {
     return (
-      <Card className="mx-auto w-full max-w-md">
+      <Card className="mx-auto w-full max-w-md my-10">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Email Enviado</CardTitle>
           <CardDescription>
