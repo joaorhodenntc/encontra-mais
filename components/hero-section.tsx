@@ -1,20 +1,21 @@
 "use client"
 
 import type React from "react"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Zap, Droplet, Paintbrush, Hammer, Scissors, Trash2 } from "lucide-react"
+import { Search } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 
 const serviceCategories = [
-  { name: "Eletricista", slug: "eletricista", icon: Zap },
-  { name: "Encanador", slug: "encanador", icon: Droplet },
-  { name: "Pintor", slug: "pintor", icon: Paintbrush },
-  { name: "Pedreiro", slug: "pedreiro", icon: Hammer },
-  { name: "Marceneiro", slug: "marceneiro", icon: Scissors },
-  { name: "Diarista", slug: "diarista", icon: Trash2 },
+  { name: "Eletricista", slug: "eletricista", icon: "/raio.png" },
+  { name: "Encanador", slug: "encanador", icon: "/agua.png" },
+  { name: "Pintor", slug: "pintor", icon: "/pincel.png" },
+  { name: "Pedreiro", slug: "pedreiro", icon: "/martelo.png" },
+  { name: "Marceneiro", slug: "marceneiro", icon: "/tesoura.png" },
+  { name: "Diarista", slug: "diarista", icon: "/lixeira.png" },
 ]
 
 export function HeroSection() {
@@ -74,14 +75,16 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-1 mx-auto">
             {serviceCategories.map((category) => (
               <Link key={category.name} href={`/buscar?q=${category.slug}`}>
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center hover:bg-white/20 transition-all hover:shadow-lg">
-                  <div className="mb-2 flex justify-center">
-                    <category.icon className="h-8 w-8" strokeWidth={1.5} />
-                  </div>
-                  <div className="font-medium text-sm">{category.name}</div>
+                <div className="rounded-xl w-[120px] h-[120px] md:w-[144px] md:h-[144px] flex items-center justify-center transition-all hover:scale-105">
+                  <Image
+                    src={category.icon}
+                    alt={category.name}
+                    width={144}
+                    height={144}
+                  />
                 </div>
               </Link>
             ))}
