@@ -22,6 +22,9 @@ import {
   MapPin,
   Phone,
   Instagram,
+  Star,
+  Shield,
+  CreditCard,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -206,10 +209,12 @@ export default function ProfessionalAreaPage() {
 
   if (loading) {
     return (
-      <div className="container flex items-center justify-center px-4 py-16">
-        <div className="text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-          <p className="mt-2">Carregando...</p>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container flex items-center justify-center px-4 py-16">
+          <div className="text-center">
+            <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+            <p className="mt-2 text-muted-foreground">Carregando suas informações...</p>
+          </div>
         </div>
       </div>
     );
@@ -217,213 +222,208 @@ export default function ProfessionalAreaPage() {
 
   if (error) {
     return (
-      <div className="container px-4 py-8">
-        <Alert variant="destructive" className="mb-4">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Erro</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-        <Button onClick={() => router.push("/entrar")}>
-          Voltar para o login
-        </Button>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container px-4 py-8">
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Erro</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+          <Button onClick={() => router.push("/entrar")}>
+            Voltar para o login
+          </Button>
+        </div>
       </div>
     );
   }
 
   if (!user || !professional) {
     return (
-      <div className="container flex items-center justify-center px-4 py-16">
-        <div className="text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-          <p className="mt-2">Carregando...</p>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container flex items-center justify-center px-4 py-16">
+          <div className="text-center">
+            <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+            <p className="mt-2 text-muted-foreground">Carregando suas informações...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container px-4 py-8">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Área do Profissional</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setStoryModalOpen(true)}>
-            <Instagram className="mr-2 h-4 w-4" />
-            Gerar Story
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/area-profissional/editar-perfil">
-              <Edit className="mr-2 h-4 w-4" />
-              Editar Perfil
-            </Link>
-          </Button>
-          <Button variant="outline" onClick={handleSignOut}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center">
-              <User className="mr-2 h-5 w-5" />
-              Perfil
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4 mt-2">
-              <Avatar className="h-24 w-24 border-4 border-[#f97316]">
-                <AvatarImage
-                  src={professional.avatar_url || ""}
-                  alt={professional.full_name}
-                />
-                <AvatarFallback>
-                  {getInitials(professional.full_name)}
-                </AvatarFallback>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container px-4">
+        {/* Header com cor sólida */}
+        <div className="mb-8 rounded-xl bg-[#f97316] p-6 text-white shadow-lg">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16 border-4 border-white/20">
+                <AvatarImage src={professional.avatar_url || ""} alt={professional.full_name} />
+                <AvatarFallback>{getInitials(professional.full_name)}</AvatarFallback>
               </Avatar>
-              <div className="space-y-2 text-center sm:text-left">
-                <h3 className="text-xl font-semibold">
-                  {professional.full_name}
-                </h3>
-                <div className="flex items-center justify-center sm:justify-start text-muted-foreground">
-                  <MapPin className="mr-1 h-4 w-4" />
-                  {professional.address || "Localização não informada"}
-                </div>
-                <div className="flex items-center justify-center sm:justify-start text-muted-foreground">
-                  <Phone className="mr-1 h-4 w-4" />
-                  {professional.phone
-                    ? formatPhone(professional.phone)
-                    : "Telefone não informado"}
-                </div>
-                <div className="mt-2">
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                      professional.available
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}
-                  >
-                    {professional.available ? "Disponível" : "Indisponível"}
-                  </span>
-                  {category && (
-                    <span className="ml-2 inline-flex items-center rounded-full bg-[#fff7ed] px-2.5 py-0.5 text-xs font-semibold text-[#f97316]">
-                      {category.name}
+              <div>
+                <h1 className="text-2xl font-bold">{professional.full_name}</h1>
+                <p className="text-white/80">{category?.name || "Categoria não definida"}</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="secondary" onClick={() => setStoryModalOpen(true)}>
+                <Instagram className="mr-2 h-4 w-4" />
+                Gerar Story
+              </Button>
+              <Button variant="secondary" asChild>
+                <Link href="/area-profissional/editar-perfil">
+                  <Edit className="mr-2 h-4 w-4" />
+                  Editar Perfil
+                </Link>
+              </Button>
+              <Button variant="secondary" onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Coluna 1: Informações do Perfil */}
+          <div className="space-y-6">
+            <Card className="border-none shadow-md">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center text-lg">
+                  <User className="mr-2 h-5 w-5 text-[#f97316]" />
+                  Informações do Perfil
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4 mt-4">
+                  <div className="flex items-start gap-2 text-sm">
+                    <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                    <span>{professional.address || "Localização não informada"}</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-sm">
+                    <Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
+                    <span>
+                      {professional.phone
+                        ? formatPhone(professional.phone)
+                        : "Telefone não informado"}
                     </span>
+                  </div>
+                  <div className="flex items-center gap-2 mt-4">
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                        professional.available
+                          ? "bg-green-100 text-green-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
+                      {professional.available ? "Disponível" : "Indisponível"}
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <h4 className="font-medium mb-2">Sobre</h4>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                    {professional.description || "Nenhuma descrição fornecida."}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Coluna 2: Plano */}
+          <div className="space-y-6">
+            <Card className="border-none shadow-md">
+              <CardHeader>
+                <CardTitle className="flex items-center text-lg">
+                  <CreditCard className="mr-2 h-5 w-5 text-[#f97316]" />
+                  Seu Plano
+                </CardTitle>
+                <CardDescription>
+                  {professional.subscription_status === "free"
+                    ? "Plano Gratuito"
+                    : "Plano Premium"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {professional.subscription_status === "free" ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Star className="h-5 w-5 text-yellow-500" />
+                        <div>
+                          <p className="font-medium">Plano atual: Gratuito</p>
+                          <p className="text-sm text-muted-foreground">
+                            Aproveite todos os recursos com nosso plano Premium
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Star className="h-5 w-5 text-yellow-500" />
+                        <div>
+                          <p className="font-medium">Plano Premium</p>
+                          <p className="text-sm text-muted-foreground">
+                            R$ 29,90/mês
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-5 w-5 text-green-500" />
+                        <div>
+                          <p className="font-medium">Status: {subscription?.status === "active" ? "Ativo" : "Pendente"}</p>
+                          {subscription?.end_date && (
+                            <p className="text-sm text-muted-foreground">
+                              Próxima cobrança: {new Date(subscription.end_date).toLocaleDateString("pt-BR")}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </div>
-              </div>
-            </div>
-            <div className="mt-6">
-              <h4 className="font-medium">Sobre</h4>
-              <p className="mt-2 text-muted-foreground whitespace-pre-wrap">
-                {professional.description || "Nenhuma descrição fornecida."}
-              </p>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button variant="outline" className="w-full" asChild>
-              <Link href="/area-profissional/editar-perfil">
-                <Edit className="mr-2 h-4 w-4" />
-                Editar Perfil
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Seu Plano</CardTitle>
-              <CardDescription>
-                {professional.subscription_status === "free"
-                  ? "Plano Gratuito"
-                  : "Plano Premium"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
+              </CardContent>
+              <CardFooter>
                 {professional.subscription_status === "free" ? (
-                  <>
-                    <p>
-                      <strong>Plano atual:</strong> Gratuito
-                    </p>
-                    <p className="text-muted-foreground">
-                      Aproveite todos os recursos com nosso plano Premium
-                    </p>
-                  </>
+                  <Button
+                    className="w-full bg-[#f97316] hover:bg-[#ea580c] shadow-[0_4px_14px_0_rgb(249,115,22,0.39)] hover:shadow-[0_6px_20px_0_rgb(249,115,22,0.39)] transition-all duration-300"
+                    asChild
+                  >
+                    <Link href="/area-profissional/assinar">Assinar Agora</Link>
+                  </Button>
                 ) : (
-                  <>
-                    <p>
-                      <strong>Valor:</strong> R$ 29,90/mês
-                    </p>
-                    <p>
-                      <strong>Status:</strong>{" "}
-                      {subscription?.status === "active" ? "Ativo" : "Pendente"}
-                    </p>
-                    {subscription?.end_date && (
-                      <p>
-                        <strong>Próxima cobrança:</strong>{" "}
-                        {new Date(subscription.end_date).toLocaleDateString(
-                          "pt-BR"
-                        )}
-                      </p>
-                    )}
-                  </>
+                  <Button variant="outline" className="w-full">
+                    Gerenciar Assinatura
+                  </Button>
                 )}
-              </div>
-            </CardContent>
-            <CardFooter>
-              {professional.subscription_status === "free" ? (
-                <Button
-                  className="w-full bg-[#f97316] hover:bg-[#ea580c]"
-                  asChild
-                >
-                  <Link href="/area-profissional/assinar">Assinar Agora</Link>
-                </Button>
-              ) : (
-                <Button variant="outline" className="w-full">
-                  Gerenciar Assinatura
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
+              </CardFooter>
+            </Card>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Status da Conta</CardTitle>
-              <CardDescription>
-                {professional.verified
-                  ? "Conta Verificada"
-                  : professional.verification_status === "submitted"
-                  ? "Aguardando Verificação"
-                  : professional.verification_status === "rejected"
-                  ? "Verificação Rejeitada"
-                  : "Conta Pendente de Verificação"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {professional.verified ? (
-                  <div className="flex items-center gap-2 text-green-600">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5"
-                    >
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                      <polyline points="22 4 12 14.01 9 11.01" />
-                    </svg>
-                    <p>Sua conta está verificada e ativa</p>
-                  </div>
-                ) : professional.verification_status === "submitted" ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-blue-600">
+          {/* Coluna 3: Status da Conta */}
+          <div className="space-y-6">
+            <Card className="border-none shadow-md">
+              <CardHeader>
+                <CardTitle className="flex items-center text-lg">
+                  <Shield className="mr-2 h-5 w-5 text-[#f97316]" />
+                  Status da Conta
+                </CardTitle>
+                <CardDescription>
+                  {professional.verified
+                    ? "Conta Verificada"
+                    : professional.verification_status === "submitted"
+                    ? "Aguardando Verificação"
+                    : professional.verification_status === "rejected"
+                    ? "Verificação Rejeitada"
+                    : "Conta Pendente de Verificação"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {professional.verified ? (
+                    <div className="flex items-center gap-2 text-green-600">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -434,121 +434,121 @@ export default function ProfessionalAreaPage() {
                         strokeLinejoin="round"
                         className="h-5 w-5"
                       >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 6v6l4 2" />
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
                       </svg>
-                      <p>Documentos enviados para verificação</p>
+                      <div>
+                        <p className="font-medium">Sua conta está verificada e ativa</p>
+                        <p className="text-sm text-muted-foreground">
+                          Aproveite todos os recursos da plataforma
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Seus documentos foram recebidos e estão sendo analisados pela nossa equipe. 
-                      Você receberá uma notificação assim que a verificação for concluída.
-                    </p>
-                  </div>
-                ) : professional.verification_status === "rejected" ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-red-600">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-5 w-5"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="15" y1="9" x2="9" y2="15" />
-                        <line x1="9" y1="9" x2="15" y2="15" />
-                      </svg>
-                      <p>Verificação rejeitada</p>
+                  ) : professional.verification_status === "submitted" ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-blue-600">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-5 w-5"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 6v6l4 2" />
+                        </svg>
+                        <div>
+                          <p className="font-medium">Documentos enviados para verificação</p>
+                          <p className="text-sm text-muted-foreground">
+                            Seus documentos estão sendo analisados pela nossa equipe
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Sua verificação foi rejeitada. Por favor, envie novamente seus documentos 
-                      garantindo que estejam legíveis e completos.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-yellow-600">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-5 w-5"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="12" y1="8" x2="12" y2="12" />
-                        <line x1="12" y1="16" x2="12.01" y2="16" />
-                      </svg>
-                      <p>Sua conta ainda não está verificada</p>
+                  ) : professional.verification_status === "rejected" ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-red-600">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-5 w-5"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="15" y1="9" x2="9" y2="15" />
+                          <line x1="9" y1="9" x2="15" y2="15" />
+                        </svg>
+                        <div>
+                          <p className="font-medium">Verificação rejeitada</p>
+                          <p className="text-sm text-muted-foreground">
+                            Por favor, envie novamente seus documentos
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Para ter acesso a todos os recursos e aumentar sua
-                      visibilidade, é necessário verificar sua conta.
-                    </p>
-                  </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-yellow-600">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-5 w-5"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        <div>
+                          <p className="font-medium">Sua conta ainda não está verificada</p>
+                          <p className="text-sm text-muted-foreground">
+                            Verifique sua conta para aumentar sua visibilidade
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+              <CardFooter>
+                {!professional.verified && professional.verification_status !== "submitted" && (
+                  <Button 
+                    variant="outline" 
+                    className="w-full hover:bg-[#f97316] hover:text-white transition-colors duration-300" 
+                    asChild
+                  >
+                    <Link href="/area-profissional/verificar-conta">
+                      {professional.verification_status === "rejected" 
+                        ? "Enviar Documentos Novamente" 
+                        : "Verificar Identidade"}
+                    </Link>
+                  </Button>
                 )}
-              </div>
-            </CardContent>
-            <CardFooter>
-              {!professional.verified && professional.verification_status !== "submitted" && (
-                <Button variant="outline" className="w-full" asChild>
-                  <Link href="/area-profissional/verificar-conta">
-                    {professional.verification_status === "rejected" 
-                      ? "Enviar Documentos Novamente" 
-                      : "Verificar Identidade"}
-                  </Link>
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
+              </CardFooter>
+            </Card>
+          </div>
         </div>
-      </div>
 
-      <div className="mt-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Estatísticas</CardTitle>
-            <CardDescription>Desempenho do seu perfil</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              <div className="rounded-lg border p-3 text-center">
-                <p className="text-sm text-muted-foreground">Visualizações</p>
-                <p className="mt-1 text-2xl font-bold">0</p>
-              </div>
-              <div className="rounded-lg border p-3 text-center">
-                <p className="text-sm text-muted-foreground">Contatos</p>
-                <p className="mt-1 text-2xl font-bold">0</p>
-              </div>
-              <div className="rounded-lg border p-3 text-center">
-                <p className="text-sm text-muted-foreground">Dias ativos</p>
-                <p className="mt-1 text-2xl font-bold">1</p>
-              </div>
-              <div className="rounded-lg border p-3 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Taxa de resposta
-                </p>
-                <p className="mt-1 text-2xl font-bold">-</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {professional && category && (
+          <InstagramStoryModal
+            open={storyModalOpen}
+            onOpenChange={setStoryModalOpen}
+            professional={professional}
+            category={category}
+          />
+        )}
       </div>
-
-      {professional && category && (
-        <InstagramStoryModal
-          open={storyModalOpen}
-          onOpenChange={setStoryModalOpen}
-          professional={professional}
-          category={category}
-        />
-      )}
     </div>
   );
 }
