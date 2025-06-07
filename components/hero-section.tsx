@@ -41,10 +41,10 @@ export function HeroSection() {
       <div className="container px-4 py-16 md:py-20 lg:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+            <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl drop-shadow-[0_4px_3px_rgba(0,0,0,0.3)]">
               Encontre os melhores profissionais gratuitamente
             </h1>
-            <p className="mb-10 text-xl text-white/90">
+            <p className="mb-10 text-xl text-white/90 drop-shadow-[0_4px_3px_rgba(0,0,0,0.3)]">
             Seu marketplace de serviços: encontre ou divulgue com praticidade.
             </p>
 
