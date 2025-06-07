@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,17 +9,12 @@ import Link from "next/link"
 import { useState } from "react"
 
 const serviceCategories = [
-  { 
-    name: "Eletricista", 
-    slug: "eletricista", 
-    icon: Zap,
-    customIcon: "/raio.png"
-  },
-  { name: "Encanador", slug: "encanador", icon: Droplet, customIcon: "/agua.png"  },
-  { name: "Pintor", slug: "pintor", icon: Paintbrush, customIcon: "/pincel.png" },
-  { name: "Pedreiro", slug: "pedreiro", icon: Hammer, customIcon: "/martelo.png" },
-  { name: "Marceneiro", slug: "marceneiro", icon: Scissors, customIcon: "/tesoura.png" },
-  { name: "Diarista", slug: "diarista", icon: Trash2, customIcon: "/lixeira.png" },
+  { name: "Eletricista", slug: "eletricista", icon: Zap },
+  { name: "Encanador", slug: "encanador", icon: Droplet },
+  { name: "Pintor", slug: "pintor", icon: Paintbrush },
+  { name: "Pedreiro", slug: "pedreiro", icon: Hammer },
+  { name: "Marceneiro", slug: "marceneiro", icon: Scissors },
+  { name: "Diarista", slug: "diarista", icon: Trash2 },
 ]
 
 export function HeroSection() {
@@ -83,15 +77,9 @@ export function HeroSection() {
           <div className="grid grid-cols-3 gap-3">
             {serviceCategories.map((category) => (
               <Link key={category.name} href={`/buscar?q=${category.slug}`}>
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center hover:bg-white/20 transition-all hover:shadow-lg hover:scale-105 hover:-translate-y-1 duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center hover:bg-white/20 transition-all hover:shadow-lg">
                   <div className="mb-2 flex justify-center">
-                    <Image
-                      src={category.customIcon}
-                      alt={category.name}
-                      width={62}
-                      height={62}
-                      className="drop-shadow-[0_10px_4px_rgba(0,0,0,0.3)]"
-                    />
+                    <category.icon className="h-8 w-8" strokeWidth={1.5} />
                   </div>
                   <div className="font-medium text-sm">{category.name}</div>
                 </div>

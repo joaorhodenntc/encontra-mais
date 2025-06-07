@@ -259,7 +259,7 @@ export default function ProfessionalAreaPage() {
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16 border-4 border-white/20">
                 <AvatarImage src={professional.avatar_url || ""} alt={professional.full_name} />
-                <AvatarFallback>{getInitials(professional.full_name)}</AvatarFallback>
+                <AvatarFallback className="text-black">{getInitials(professional.full_name)}</AvatarFallback>
               </Avatar>
               <div>
                 <h1 className="text-2xl font-bold">{professional.full_name}</h1>
