@@ -38,6 +38,7 @@ type Professional = {
   category_id: string;
   available: boolean;
   verified: boolean;
+  verification_status: "pending" | "submitted" | "approved" | "rejected";
   avatar_url: string | null;
   created_at: string;
   updated_at: string;
@@ -263,7 +264,7 @@ export default function ProfessionalAreaPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="md:row-span-2">
+        <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center">
               <User className="mr-2 h-5 w-5" />
@@ -394,6 +395,10 @@ export default function ProfessionalAreaPage() {
               <CardDescription>
                 {professional.verified
                   ? "Conta Verificada"
+                  : professional.verification_status === "submitted"
+                  ? "Aguardando Verificação"
+                  : professional.verification_status === "rejected"
+                  ? "Verificação Rejeitada"
                   : "Conta Pendente de Verificação"}
               </CardDescription>
             </CardHeader>
@@ -415,6 +420,53 @@ export default function ProfessionalAreaPage() {
                       <polyline points="22 4 12 14.01 9 11.01" />
                     </svg>
                     <p>Sua conta está verificada e ativa</p>
+                  </div>
+                ) : professional.verification_status === "submitted" ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-blue-600">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                      </svg>
+                      <p>Documentos enviados para verificação</p>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Seus documentos foram recebidos e estão sendo analisados pela nossa equipe. 
+                      Você receberá uma notificação assim que a verificação for concluída.
+                    </p>
+                  </div>
+                ) : professional.verification_status === "rejected" ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-red-600">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                      </svg>
+                      <p>Verificação rejeitada</p>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Sua verificação foi rejeitada. Por favor, envie novamente seus documentos 
+                      garantindo que estejam legíveis e completos.
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -444,10 +496,12 @@ export default function ProfessionalAreaPage() {
               </div>
             </CardContent>
             <CardFooter>
-              {!professional.verified && (
+              {!professional.verified && professional.verification_status !== "submitted" && (
                 <Button variant="outline" className="w-full" asChild>
                   <Link href="/area-profissional/verificar-conta">
-                    Verificar Conta
+                    {professional.verification_status === "rejected" 
+                      ? "Enviar Documentos Novamente" 
+                      : "Verificar Identidade"}
                   </Link>
                 </Button>
               )}
